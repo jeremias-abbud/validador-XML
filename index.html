@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de TAG XML</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Validador XML</h1>
+        <div class="input-container">
+            <label for="xmlFileInput">Selecione o arquivo XML:</label>
+            <input type="file" id="xmlFileInput">
+            <button class="small-button" onclick="clearFile()">Limpar Arquivo</button>
+        </div>
+        <div class="input-container">
+            <label for="tagNameInput">Nome da TAG:</label>
+            <input type="text" id="tagNameInput" placeholder="nomeDaTag">
+            <p class="tag-instruction">Utilize letras maiúsculas e minúsculas, no padrão camelCase, e não utilize
+                acentuação. Ex: dadosAutorizacao.</p>
+            <button class="small-button" onclick="clearTag()">Limpar TAG</button>
+            <button class="large-button" onclick="validateTag()">Validar TAG</button>
+            <button class="large-button" onclick="listarTagsPadrao()">Comparar Contas</button>
+        <div id="feedback" class="result"></div>
+        </div>
+
+
+        <div id="feedback" class="result"></div>
+        <div id="output" class="result"></div>
+        <div id="validationResult" class="result"></div>
+        <button class="large-button hidden" id="clearResultBtn" onclick="clearResult()">Limpar Resultado</button>
+        <button class="large-button hidden" id="historyBtn" onclick="toggleHistory()">Histórico de Validações</button>
+        <div id="history" class="result hidden">
+            <h2>Histórico de Validações</h2>
+            <div id="historyContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
