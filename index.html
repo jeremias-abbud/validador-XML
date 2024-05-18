@@ -5,37 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validação de TAG XML</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Validador XML</h1>
-        <div class="input-container">
+    <div class="container mt-5">
+        <h1 class="text-center">Validador XML</h1>
+        <div class="input-container mt-4">
             <label for="xmlFileInput">Selecione o arquivo XML:</label>
-            <input type="file" id="xmlFileInput">
-            <button class="small-button" onclick="clearFile()">Limpar Arquivo</button>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="xmlFileInput">
+                    <label for="xmlFileInput" class="custom-file-label">Anexar arquivo</label>
+                </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-danger" type="button" onclick="clearFile()">Limpar Arquivo</button>
+                </div>
+            </div>
+            <span id="file-name" class="mt-2"></span>
+            <div id="feedback" class="result mt-2"></div> <!-- Movido para aqui -->
         </div>
-        <div class="input-container">
+        <div class="input-container mt-4">
             <label for="tagNameInput">Nome da TAG:</label>
-            <input type="text" id="tagNameInput" placeholder="nomeDaTag">
-            <p class="tag-instruction">Utilize letras maiúsculas e minúsculas, no padrão camelCase, e não utilize
-                acentuação. Ex: dadosAutorizacao.</p>
-            <button class="small-button" onclick="clearTag()">Limpar TAG</button>
-            <button class="large-button" onclick="validateTag()">Validar TAG</button>
-            <button class="large-button" onclick="listarTagsPadrao()">Comparar Contas</button>
-        <div id="feedback" class="result"></div>
+            <input type="text" id="tagNameInput" placeholder="nomeDaTag" class="form-control">
+            <p class="tag-instruction mt-2">Utilize letras maiúsculas e minúsculas, no padrão camelCase, e não utilize acentuação. Ex: dadosAutorizacao.</p>
+            <div class="button-row mt-3">
+                <button class="btn btn-outline-success btn-lg mr-2" onclick="validateTag()">Validar TAG</button>
+                <button class="btn btn-outline-warning btn-lg" onclick="clearTag()">Limpar TAG</button>
+            </div>
         </div>
-
-
-        <div id="feedback" class="result"></div>
-        <div id="output" class="result"></div>
-        <div id="validationResult" class="result"></div>
-        <button class="large-button hidden" id="clearResultBtn" onclick="clearResult()">Limpar Resultado</button>
-        <button class="large-button hidden" id="historyBtn" onclick="toggleHistory()">Histórico de Validações</button>
-        <div id="history" class="result hidden">
-            <h2>Histórico de Validações</h2>
-            <div id="historyContent"></div>
+        <button id="comparar" class="btn btn-primary btn-lg btn-block mt-4" onclick="compararContas()">Comparar Contas</button>
+        <button id="exibirBeneficiarios" class="btn btn-info btn-lg btn-block mt-4" onclick="exibirBeneficiarios()">Exibir Beneficiários</button>
+        <div class="result-container mt-4">
+            <div id="feedback" class="result mt-2"></div>
+            <div id="output" class="result mt-2"></div>
+            <div id="validationResult" class="result mt-2"></div>
+            <button class="btn btn-secondary btn-lg btn-block mt-3 hidden" id="clearResultBtn" onclick="clearResult()">Limpar Resultado</button>
+            <button class="btn btn-secondary btn-lg btn-block mt-3 " id="historyBtn" onclick="toggleHistory()">Histórico de Validações</button>
+            <div id="history" class="result hidden mt-4">
+                <h3 class="mt-3">Histórico de Validações</h2>
+                <div id="historyContent"></div>
+            </div>
         </div>
     </div>
 

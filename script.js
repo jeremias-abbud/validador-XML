@@ -1,3 +1,6 @@
+let globalBeneficiaryNames = []; // Variável global para armazenar os nomes dos beneficiários
+
+
 function parseXML(xml) {
     const parser = new DOMParser();
     return parser.parseFromString(xml, "text/xml");
@@ -15,6 +18,7 @@ function getBeneficiaryNames(xmlDoc) {
     const beneficiaryNames = [];
     const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP-SADT");
     const guiaResumoInternacao = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaResumoInternacao");
+    const guiaConsulta = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaConsulta");
 
     for (let i = 0; i < guiaSP_SADT.length; i++) {
         const nomeBeneficiario = guiaSP_SADT[i].getElementsByTagNameNS(namespaces.ans, "nomeBeneficiario")[0].textContent;
@@ -26,22 +30,30 @@ function getBeneficiaryNames(xmlDoc) {
         beneficiaryNames.push(nomeBeneficiario);
     }
 
+    for (let i = 0; i < guiaConsulta.length; i++) {
+        const nomeBeneficiario = guiaConsulta[i].getElementsByTagNameNS(namespaces.ans, "nomeBeneficiario")[0].textContent;
+        beneficiaryNames.push(nomeBeneficiario);
+    }
+
+
     return beneficiaryNames;
 }
 
-document.getElementById('xmlFileInput').addEventListener('change', function(event) {
+document.getElementById('xmlFileInput').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const xmlDoc = parseXML(e.target.result);
             const feedback = document.getElementById('feedback');
             if (isValidXML(xmlDoc)) {
                 feedback.textContent = "Arquivo XML carregado com sucesso.";
+                feedback.classList.add('success');
                 const beneficiaryNames = getBeneficiaryNames(xmlDoc);
                 displayBeneficiaryInfo(beneficiaryNames);
             } else {
                 feedback.textContent = "Erro: Arquivo XML inválido.";
+                feedback.classList.remove('success');
             }
         };
         reader.readAsText(file);
@@ -51,12 +63,22 @@ document.getElementById('xmlFileInput').addEventListener('change', function(even
 function displayBeneficiaryInfo(beneficiaryNames) {
     const output = document.getElementById('output');
     output.innerHTML = `<p>O arquivo possui ${beneficiaryNames.length} contas.</p>`;
+    globalBeneficiaryNames = beneficiaryNames; // Atribui os nomes dos beneficiários à variável global
     beneficiaryNames.forEach((name, index) => {
         output.innerHTML += `<p>Conta ${index + 1}: ${name}</p>`;
+        // Remover a classe 'hidden' do botão Limpar Resultado
+    document.getElementById('clearResultBtn').classList.remove('hidden');
     });
 }
 
+
+function exibirBeneficiarios() {
+    displayBeneficiaryInfo(globalBeneficiaryNames); // Usando a variável global que armazena os nomes dos beneficiários
+}
+
+
 function validateTag() {
+    clearFeedback();
     const tagName = document.getElementById('tagNameInput').value.trim();
     const feedback = document.getElementById('feedback');
     const validationResult = document.getElementById('validationResult');
@@ -73,13 +95,13 @@ function validateTag() {
     if (file) {
         feedback.textContent = "Validando TAG...";
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const xmlDoc = parseXML(e.target.result);
             if (isValidXML(xmlDoc)) {
                 const beneficiaryNames = getBeneficiaryNames(xmlDoc);
                 const absentAccounts = [];
                 beneficiaryNames.forEach((name, index) => {
-                    const conta = xmlDoc.evaluate(`//*[local-name()='guiaSP-SADT' or local-name()='guiaResumoInternacao'][${index + 1}]//*[local-name()='${tagName}']`, xmlDoc, null, XPathResult.ANY_TYPE, null);
+                    const conta = xmlDoc.evaluate(`//*[local-name()='guiaSP-SADT' or local-name()='guiaResumoInternacao' or local-name()='guiaConsulta'][${index + 1}]//*[local-name()='${tagName}']`, xmlDoc, null, XPathResult.ANY_TYPE, null);
                     if (!conta.iterateNext()) {
                         absentAccounts.push(name);
                     }
@@ -109,24 +131,29 @@ function validateTag() {
     }
 }
 
+
 function toggleHistory() {
     const history = document.getElementById('history');
     history.classList.toggle('hidden');
 }
 
 function clearFile() {
+    clearFeedback();
     document.getElementById('xmlFileInput').value = "";
     document.getElementById('output').innerHTML = "";
     document.getElementById('validationResult').innerHTML = "";
     document.getElementById('feedback').innerHTML = "";
     document.getElementById('clearResultBtn').classList.add('hidden');
+    document.getElementById('historyBtn').classList.add('hidden');
 }
 
 function clearResult() {
+    clearFeedback();
     document.getElementById('output').innerHTML = "";
     document.getElementById('validationResult').innerHTML = "";
     document.getElementById('feedback').innerHTML = "";
     document.getElementById('clearResultBtn').classList.add('hidden');
+    document.getElementById('historyBtn').classList.add('hidden');
 }
 
 function clearTag() {
@@ -134,52 +161,59 @@ function clearTag() {
 }
 
 function compararContas() {
+    clearFeedback();
     const feedback = document.getElementById('feedback');
     const validationResult = document.getElementById('validationResult');
     const historyContent = document.getElementById('historyContent');
     const clearResultBtn = document.getElementById('clearResultBtn');
+    const historyBtn = document.getElementById('historyBtn');
 
     const file = document.getElementById('xmlFileInput').files[0];
     if (file) {
         feedback.textContent = "Comparando contas...";
         const reader = new FileReader();
-        reader.onload = function(e) {
-            const xmlDoc = parseXML(e.target.result);
-            if (isValidXML(xmlDoc)) {
+        reader.onload = function (e) {
+            const xmlDoc = new DOMParser().parseFromString(e.target.result, "text/xml");
+            if (xmlDoc.getElementsByTagName('parsererror').length === 0) {
                 const beneficiaryNames = getBeneficiaryNames(xmlDoc);
-                const tags = new Set();
-                const tagsPorConta = {};
 
+                // Mapear as tags presentes em cada conta
+                const tagsByBeneficiary = new Map();
                 beneficiaryNames.forEach((name, index) => {
-                    const conta = xmlDoc.evaluate(`//*[local-name()='guiaSP-SADT' or local-name()='guiaResumoInternacao'][${index + 1}]/*`, xmlDoc, null, XPathResult.ANY_TYPE, null);
-                    tagsPorConta[name] = new Set();
-                    let tag = conta.iterateNext();
+                    const tags = xmlDoc.evaluate(`//*[local-name()='guiaSP-SADT' or local-name()='guiaResumoInternacao' or local-name()='guiaConsulta'][${index + 1}]//*[not(self::text())]`, xmlDoc, null, XPathResult.ANY_TYPE, null);
+                    let tag = tags.iterateNext();
+                    const tagList = [];
                     while (tag) {
-                        tags.add(tag.localName);
-                        tagsPorConta[name].add(tag.localName);
-                        tag = conta.iterateNext();
+                        tagList.push(tag.localName);
+                        tag = tags.iterateNext();
                     }
+                    tagsByBeneficiary.set(name, tagList);
                 });
 
+                // Verificar quais tags estão presentes em todas as contas
+                const allTags = new Set();
+                tagsByBeneficiary.forEach(tagList => {
+                    tagList.forEach(tag => allTags.add(tag));
+                });
+
+                // Listar todas as tags e verificar a presença em cada conta
                 validationResult.innerHTML = "<p>Listagem de todas as TAGS das contas:</p>";
-                tags.forEach(tag => {
-                    let todasContas = true;
-                    validationResult.innerHTML += `<p><strong>${tag}</strong>: `;
-                    for (const [conta, tagsConta] of Object.entries(tagsPorConta)) {
-                        if (!tagsConta.has(tag)) {
-                            todasContas = false;
-                            validationResult.innerHTML += ` - Não encontrada em ${conta}`;
+                allTags.forEach(tagName => {
+                    const accountsMissingTag = [];
+                    tagsByBeneficiary.forEach((tagList, beneficiaryName) => {
+                        if (!tagList.includes(tagName)) {
+                            accountsMissingTag.push(beneficiaryName);
                         }
-                    }
-                    if (todasContas) {
-                        validationResult.innerHTML += " - Presente em todas as contas";
-                    }
-                    validationResult.innerHTML += "</p>";
+                    });
+                    const status = accountsMissingTag.length === 0 ? "Presente em todas as contas" : `Não encontrada em ${accountsMissingTag.join(", ")}`;
+                    validationResult.innerHTML += `<p><strong>${tagName}</strong>: ${status}</p>`;
                 });
 
+                // Atualizar interface de usuário
                 feedback.textContent = "";
                 clearResultBtn.classList.remove('hidden');
-                historyContent.innerHTML += `<div><strong>Comparação de contas</strong> - ${new Date().toLocaleString()}</div>`;
+                historyBtn.classList.remove('hidden');
+                historyContent.innerHTML += `<div><strong>Comparação de contas:</strong> ${new Date().toLocaleString()}</div>`;
                 historyContent.innerHTML += validationResult.innerHTML;
             } else {
                 feedback.textContent = "Erro: Arquivo XML inválido.";
@@ -191,48 +225,17 @@ function compararContas() {
     }
 }
 
-function listarTagsPadrao() {
-    const file = document.getElementById('xmlFileInput').files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const xmlDoc = parseXML(e.target.result);
-            if (isValidXML(xmlDoc)) {
-                const tagsPadrao = new Set();
-                const guias = xmlDoc.querySelectorAll('guiaSP-SADT, guiaResumoInternacao');
-                guias.forEach(guia => {
-                    guia.querySelectorAll('*').forEach(tag => {
-                        tagsPadrao.add(tag.nodeName);
-                    });
-                });
-
-                const output = document.getElementById('output');
-                output.innerHTML = "<h2>Listagem das TAGs padrão do arquivo:</h2>";
-                tagsPadrao.forEach(tag => {
-                    output.innerHTML += `<p><strong>${tag}:</strong> Presente em todas as contas</p>`;
-                });
-
-                const absentTags = new Set();
-                guias.forEach((guia, index) => {
-                    tagsPadrao.forEach(tag => {
-                        if (!guia.querySelector(tag)) {
-                            absentTags.add(tag);
-                        }
-                    });
-                });
-
-                if (absentTags.size > 0) {
-                    output.innerHTML += "<h3>Tags ausentes em alguma conta:</h3>";
-                    absentTags.forEach(tag => {
-                        output.innerHTML += `<p><strong>${tag}:</strong> Ausente em uma ou mais contas</p>`;
-                    });
-                }
-            } else {
-                document.getElementById('feedback').textContent = "Erro: Arquivo XML inválido.";
-            }
-        };
-        reader.readAsText(file);
-    } else {
-        document.getElementById('feedback').textContent = "Por favor, selecione um arquivo XML primeiro.";
-    }
+function updateFeedbackMessage(message, isSuccess) {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = message;
+    feedback.classList.remove(isSuccess ? 'error' : 'success');
+    feedback.classList.add(isSuccess ? 'success' : 'error');
 }
+
+function clearFeedback() {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = "";
+    feedback.classList.remove('success');
+    feedback.classList.remove('error');
+}
+
