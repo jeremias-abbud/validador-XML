@@ -6,7 +6,7 @@ document.getElementById('xmlFileInput').addEventListener('change', function (eve
         const reader = new FileReader();
         reader.onload = function (e) {
             const xmlDoc = parseXML(e.target.result);
-            const feedback = document.getElementById('feedback');
+            const feedback = document.getElementById('file-feedback');
             if (isValidXML(xmlDoc)) {
                 feedback.textContent = "Arquivo XML carregado com sucesso.";
                 feedback.classList.add('success');
@@ -77,7 +77,7 @@ function exibirBeneficiarios() {
 function validateTag() {
     clearFeedback();
     const tagName = document.getElementById('tagNameInput').value.trim();
-    const feedback = document.getElementById('feedback');
+    const feedback = document.getElementById('tag-feedback');
     const validationResult = document.getElementById('validationResult');
     const clearResultBtn = document.getElementById('clearResultBtn');
 
@@ -88,7 +88,7 @@ function validateTag() {
 
     const file = document.getElementById('xmlFileInput').files[0];
     if (file) {
-        feedback.textContent = "Validando TAG...";
+        feedback.textContent = `Validando TAG ${tagName}...`;
         const reader = new FileReader();
         reader.onload = function (e) {
             const xmlDoc = parseXML(e.target.result);
@@ -139,11 +139,10 @@ function validateTagPresence(xmlDoc, beneficiaryNames, tagName) {
     return results;
 }
 
-
 function displayValidationResult(results) {
     const tagName = document.getElementById('tagNameInput').value.trim();
     const validationResult = document.getElementById('validationResult');
-    validationResult.innerHTML = `<h2>Resultado da Validação por TAG: ${tagName}</h2>`;
+    validationResult.innerHTML = `<h3>Resultado da Validação por TAG: ${tagName}</h3>`;
     results.forEach(result => {
         const status = result.isPresent ? "<span class='green-text'>Presente</span>" : "<span class='red-text'>Ausente</span>";
         validationResult.innerHTML += `<p>Beneficiário: ${result.name} - TAG ${status}</p>`;
@@ -153,8 +152,8 @@ function displayValidationResult(results) {
 function compararContas() {
     clearFeedback();
     const file = document.getElementById('xmlFileInput').files[0];
-    const feedback = document.getElementById('feedback');
-    const validationResult = document.getElementById('validationResult');
+    const feedback = document.getElementById('comparison-feedback');
+    const validationResult = document.getElementById('comparisonResult');
     const clearResultBtn = document.getElementById('clearResultBtn');
 
     if (file) {
@@ -185,7 +184,7 @@ function compararContas() {
                 });
 
                 // Listar todas as tags e verificar a presença em cada conta
-                validationResult.innerHTML = "<h2><b>Listagem de todas as TAGS das contas:</b></h2>";
+                validationResult.innerHTML = "<h3><b>Listagem de todas as TAGS das contas:</b></h3>";
                 allTags.forEach(tagName => {
                     const accountsMissingTag = [];
                     tagsByBeneficiary.forEach((tagList, beneficiaryName) => {
@@ -205,7 +204,6 @@ function compararContas() {
                 });
 
                 // Atualizar interface de usuário
-                feedback.textContent = "";
                 clearResultBtn.classList.remove('hidden');
             } else {
                 feedback.textContent = "Erro: Arquivo XML inválido.";
@@ -217,12 +215,26 @@ function compararContas() {
     }
 }
 
+function clearComparisonSection() {
+    document.getElementById('comparison-feedback').innerHTML = "";
+    document.getElementById('comparison-feedback').classList.remove('success', 'error');
+    document.getElementById('comparisonResult').innerHTML = "";
+}
+
+function clearBeneficiaryList() {
+    const output = document.getElementById('output');
+    output.innerHTML = "";
+}
+
 function clearFile() {
     clearFeedback();
     document.getElementById('xmlFileInput').value = "";
     document.getElementById('output').innerHTML = "";
     document.getElementById('validationResult').innerHTML = "";
-    document.getElementById('feedback').innerHTML = "";
+    document.getElementById('comparisonResult').innerHTML = "";
+    document.getElementById('file-feedback').innerHTML = "";
+    document.getElementById('tag-feedback').innerHTML = "";
+    document.getElementById('comparison-feedback').innerHTML = "";
     document.getElementById('clearResultBtn').classList.add('hidden');
     globalBeneficiaryNames = []; // Limpa a variável global que armazena os nomes dos beneficiários
 }
@@ -231,7 +243,7 @@ function clearResult() {
     clearFeedback();
     document.getElementById('output').innerHTML = "";
     document.getElementById('validationResult').innerHTML = "";
-    document.getElementById('feedback').innerHTML = "";
+    document.getElementById('comparisonResult').innerHTML = "";
     document.getElementById('clearResultBtn').classList.add('hidden');
 }
 
@@ -239,9 +251,18 @@ function clearTag() {
     document.getElementById('tagNameInput').value = "";
 }
 
+function clearTagSection() {
+    document.getElementById('tagNameInput').value = "";
+    document.getElementById('tag-feedback').innerHTML = "";
+    document.getElementById('tag-feedback').classList.remove('success', 'error');
+    document.getElementById('validationResult').innerHTML = "";
+}
+
 function clearFeedback() {
-    const feedback = document.getElementById('feedback');
-    feedback.textContent = "";
-    feedback.classList.remove('success');
-    feedback.classList.remove('error');
+    const feedbackElements = document.querySelectorAll('.result');
+    feedbackElements.forEach(feedback => {
+        feedback.textContent = "";
+        feedback.classList.remove('success');
+        feedback.classList.remove('error');
+    });
 }

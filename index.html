@@ -23,10 +23,8 @@
                 <button class="btn secondary" onclick="clearFile()" title="Limpar Arquivo">Limpar Arquivo</button>
             </div>
             <span id="file-name" class="mt-2"></span>
-            
+            <div id="file-feedback" class="result mt-2">Status:</div>
         </section>
-
-        <div id="feedback" class="result mt-2">Status:</div>
 
         <section class="tag-validation">
             <h2>Validação por TAG</h2>
@@ -35,12 +33,16 @@
             <div class="tag-input">
                 <label for="tagNameInput">Nome da TAG:</label>
                 <input type="text" id="tagNameInput" placeholder="nomeDaTag">
-                <p class="tag-instruction">Observe o padrão das letras maiúsculas e minúsculas. <br> Ex: dadosAutorizacao.</p>
+                <p class="tag-instruction">Observe o padrão das letras maiúsculas e minúsculas. <br> Ex:
+                    dadosAutorizacao.</p>
             </div>
             <div class="button-row">
                 <button class="btn success" onclick="validateTag()" title="Validar TAG">Validar TAG</button>
                 <button class="btn warning" onclick="clearTag()" title="Limpar TAG">Limpar TAG</button>
             </div>
+            <div id="tag-feedback" class="result mt-2">Status:</div>
+            <div id="validationResult" class="result mt-2"></div>
+            <button id="clearTagBtn" onclick="clearTagSection()">Limpar</button>
         </section>
 
         <section class="actions">
@@ -49,22 +51,23 @@
                 presentes e em quais estão ausentes.</p>
             <button id="comparar" class="btn primary" onclick="compararContas()" title="Comparar Contas">Comparar
                 Contas</button>
-        </section>
-
-        <section class="results">
-            <h2>Resultados</h2>
-            <div id="validationResult" class="result mt-2"></div>
+            <div id="comparison-feedback" class="result mt-2">Status:</div>
+            <div id="comparisonResult" class="result mt-2"></div>
+            <button id="clearComparisonBtn" onclick="clearComparisonSection()">Limpar</button>
         </section>
 
         <section class="beneficiary-list">
             <h2>Lista de Beneficiários</h2>
+            <p>Clique para exibir a lista de beneficiários presente no arquivo XML.</p>
             <div id="output" class="result"></div>
-            <button class="btn primary mt-2" id="exibirBeneficiarios" onclick="exibirBeneficiarios()" title="Exibir Beneficiários">Exibir Beneficiários</button>
+            <button class="btn primary mt-2" id="exibirBeneficiarios" onclick="exibirBeneficiarios()"
+                title="Exibir Beneficiários">Exibir Beneficiários</button>
+                <button id="clearBeneficiaryBtn" onclick="clearBeneficiaryList()">Limpar</button>
+            </button>
         </section>
-        
 
         <button class="btn secondary hidden" id="clearResultBtn" onclick="clearResult()" title="Limpar Resultado">Limpar
-            </button>
+            Tudo
     </div>
     <script src="script.js"></script>
 </body>
