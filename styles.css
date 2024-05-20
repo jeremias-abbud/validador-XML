@@ -1,63 +1,187 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo do corpo da página */
 body {
-    background-color: #f8f9fa;
-}
-
-.container {
-    background-color: #e2e3e5;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    margin-top: 50px;
-}
-
-h1 {
-    color: #007bff;
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.input-container {
-    margin-bottom: 30px;
-}
-
-.tag-instruction {
-    font-size: 14px;
-    color: #6c757d;
-    margin-top: 5px;
-}
-
-.button-row {
-    display: flex;
-    justify-content: center;
-}
-
-.result-container {
-    background-color: #d6d8db;
-    padding: 20px;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-.result {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4; /* Cinza suave */
+    color: #333; /* Texto escuro */
     padding: 10px;
-    border: 1px solid transparent;
-    border-radius: 4px;
 }
 
-.result.success {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-    color: #155724;
+/* Container principal */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 }
 
-.result.error {
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-    color: #721c24;
+/* Cabeçalho */
+header {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.hidden {
+header h1 {
+    font-size: 2em;
+    color: #f2f2f2;
+}
+
+/* Seção de arquivo */
+.file-section {
+    margin-bottom: 20px;
+}
+
+/* Estilo dos títulos das seções */
+/* Estilo dos títulos das seções */
+h1,
+section h2 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    background-color: #666; /* Cinza médio */
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    color: #f2f2f2;
+    padding: 15px 25px; /* Espaçamento interno aumentado */
+    border-radius: 0; /* Removida a borda arredondada */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-bottom: 2px solid #ccc; /* Adiciona uma linha separadora */
+}
+
+
+/* Adicionando background entre as seções */
+section {
+    background-color: #f9f9f9; /* Cinza claro */
+    padding: 30px; /* Aumento do espaçamento interno */
+    border-radius: 10px; /* Borda mais arredondada */
+    margin-bottom: 30px; /* Aumento do espaçamento inferior */
+}
+
+/* Estilo dos parágrafos das seções */
+section p {
+    margin-bottom: 10px;
+}
+
+/* Estilo do input de arquivo */
+.custom-file-label {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.custom-file-input {
+    display: inline-block;
+}
+
+/* Botões */
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1em;
+    margin-top: 10px;
+    background-color: #666; /* Cinza médio */
+    color: #fff; /* Texto branco */
+}
+
+button:hover {
+    background-color: #333; /* Cinza escuro ao passar o mouse */
+}
+
+/* Resultado */
+.result {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Cinza claro */
+    color: #333; /* Texto escuro */
+    border: 1px solid #ccc; /* Borda mais clara */
+}
+
+/* Resultado */
+.result p.present {
+    color: green;
+}
+
+.result p.absent {
+    color: red;
+}
+
+
+.red-text {
+    color: red;
+}
+
+.green-text {
+    color: green;
+}
+
+
+/* Estilo da instrução da tag */
+.tag-instruction {
+    font-size: 0.9em;
+    color: #666; /* Cinza */
+}
+
+/* Limpeza de feedback */
+#clearResultBtn.hidden {
     display: none;
+}
+
+/* Estilo dos feedbacks */
+#feedback,
+#validationResult,
+#output {
+    font-family: 'Roboto', sans-serif;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    section h2 {
+        font-size: 1.2em;
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+
+    .button-row,
+    .file-input,
+    .tag-input {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .button-row button,
+    .file-input button,
+    .tag-input button {
+        margin-left: 0;
+        margin-top: 10px;
+    }
 }

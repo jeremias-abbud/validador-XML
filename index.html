@@ -1,55 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validação de TAG XML</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Validador XML</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Validador XML</h1>
-        <div class="input-container mt-4">
-            <label for="xmlFileInput">Selecione o arquivo XML:</label>
-            <div class="input-group">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="xmlFileInput">
-                    <label for="xmlFileInput" class="custom-file-label">Anexar arquivo</label>
-                </div>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-danger" type="button" onclick="clearFile()">Limpar Arquivo</button>
-                </div>
+    <div class="container">
+        <header>
+            <h1>Validador XML - Análise de Contas</h1>
+        </header>
+
+        <section class="file-section">
+            <h2>Anexar Arquivo XML</h2>
+            <p>Selecione um arquivo XML para iniciar a validação.</p>
+            <div class="file-input">
+                <label for="xmlFileInput" class="custom-file-label"></label>
+                <input type="file" class="custom-file-input" id="xmlFileInput">
+                <button class="btn secondary" onclick="clearFile()" title="Limpar Arquivo">Limpar Arquivo</button>
             </div>
             <span id="file-name" class="mt-2"></span>
-            <div id="feedback" class="result mt-2"></div> <!-- Movido para aqui -->
-        </div>
-        <div class="input-container mt-4">
-            <label for="tagNameInput">Nome da TAG:</label>
-            <input type="text" id="tagNameInput" placeholder="nomeDaTag" class="form-control">
-            <p class="tag-instruction mt-2">Utilize letras maiúsculas e minúsculas, no padrão camelCase, e não utilize acentuação. Ex: dadosAutorizacao.</p>
-            <div class="button-row mt-3">
-                <button class="btn btn-outline-success btn-lg mr-2" onclick="validateTag()">Validar TAG</button>
-                <button class="btn btn-outline-warning btn-lg" onclick="clearTag()">Limpar TAG</button>
-            </div>
-        </div>
-        <button id="comparar" class="btn btn-primary btn-lg btn-block mt-4" onclick="compararContas()">Comparar Contas</button>
-        <button id="exibirBeneficiarios" class="btn btn-info btn-lg btn-block mt-4" onclick="exibirBeneficiarios()">Exibir Beneficiários</button>
-        <div class="result-container mt-4">
-            <div id="feedback" class="result mt-2"></div>
-            <div id="output" class="result mt-2"></div>
-            <div id="validationResult" class="result mt-2"></div>
-            <button class="btn btn-secondary btn-lg btn-block mt-3 hidden" id="clearResultBtn" onclick="clearResult()">Limpar Resultado</button>
-            <button class="btn btn-secondary btn-lg btn-block mt-3 " id="historyBtn" onclick="toggleHistory()">Histórico de Validações</button>
-            <div id="history" class="result hidden mt-4">
-                <h3 class="mt-3">Histórico de Validações</h2>
-                <div id="historyContent"></div>
-            </div>
-        </div>
-    </div>
+            
+        </section>
 
+        <div id="feedback" class="result mt-2">Status:</div>
+
+        <section class="tag-validation">
+            <h2>Validação por TAG</h2>
+            <p>Insira o nome de uma TAG e clique em "Validar TAG" para verificar se ela está presente ou ausente nas
+                contas do arquivo XML.</p>
+            <div class="tag-input">
+                <label for="tagNameInput">Nome da TAG:</label>
+                <input type="text" id="tagNameInput" placeholder="nomeDaTag">
+                <p class="tag-instruction">Observe o padrão das letras maiúsculas e minúsculas. <br> Ex: dadosAutorizacao.</p>
+            </div>
+            <div class="button-row">
+                <button class="btn success" onclick="validateTag()" title="Validar TAG">Validar TAG</button>
+                <button class="btn warning" onclick="clearTag()" title="Limpar TAG">Limpar TAG</button>
+            </div>
+        </section>
+
+        <section class="actions">
+            <h2>Comparando as contas do arquivo</h2>
+            <p>Clique para listar as TAGS presentes nas contas do arquivo, e verificar em quais contas as TAGS estão
+                presentes e em quais estão ausentes.</p>
+            <button id="comparar" class="btn primary" onclick="compararContas()" title="Comparar Contas">Comparar
+                Contas</button>
+        </section>
+
+        <section class="results">
+            <h2>Resultados</h2>
+            <div id="validationResult" class="result mt-2"></div>
+        </section>
+
+        <section class="beneficiary-list">
+            <h2>Lista de Beneficiários</h2>
+            <div id="output" class="result"></div>
+            <button class="btn primary mt-2" id="exibirBeneficiarios" onclick="exibirBeneficiarios()" title="Exibir Beneficiários">Exibir Beneficiários</button>
+        </section>
+        
+
+        <button class="btn secondary hidden" id="clearResultBtn" onclick="clearResult()" title="Limpar Resultado">Limpar
+            </button>
+    </div>
     <script src="script.js"></script>
 </body>
 
