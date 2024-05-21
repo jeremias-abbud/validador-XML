@@ -35,12 +35,31 @@ header h1 {
     color: #f2f2f2;
 }
 
+/* Navegação */
+nav {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+nav .tab-btn {
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: none;
+    background-color: #666; /* Cinza médio */
+    color: #fff; /* Texto branco */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+nav .tab-btn:hover {
+    background-color: #333; /* Cinza escuro */
+}
+
 /* Seção de arquivo */
 .file-section {
     margin-bottom: 20px;
 }
 
-/* Estilo dos títulos das seções */
 /* Estilo dos títulos das seções */
 h1,
 section h2 {
@@ -54,9 +73,22 @@ section h2 {
     padding: 15px 25px; /* Espaçamento interno aumentado */
     border-radius: 0; /* Removida a borda arredondada */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    border-bottom: 2px solid #ccc; /* Adiciona uma linha separadora */
+    /* border-bottom: 2px solid #ccc; Adiciona uma linha separadora */
 }
 
+section h3 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.0em;
+    margin-bottom: 10px;
+    background-color: #666; /* Cinza médio */
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    color: #f2f2f2;
+    padding: 15px 25px; /* Espaçamento interno aumentado */
+    /* border-radius: 0; Removida a borda arredondada */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-bottom: 2px solid #ccc; /* Adiciona uma linha separadora */
+}
 
 /* Adicionando background entre as seções */
 section {
@@ -106,7 +138,7 @@ button:hover {
     border-radius: 5px;
     background-color: #f9f9f9; /* Cinza claro */
     color: #333; /* Texto escuro */
-    border: 1px solid #ccc; /* Borda mais clara */
+    /* border: 1px solid #ccc; Borda mais clara */
 }
 
 /* Resultado */
@@ -118,7 +150,6 @@ button:hover {
     color: red;
 }
 
-
 .red-text {
     color: red;
 }
@@ -127,61 +158,17 @@ button:hover {
     color: green;
 }
 
-
 /* Estilo da instrução da tag */
 .tag-instruction {
     font-size: 0.9em;
     color: #666; /* Cinza */
 }
 
-/* Limpeza de feedback */
-#clearResultBtn.hidden {
+/* Classe hidden para esconder as seções */
+.hidden {
     display: none;
 }
 
-/* Estilo dos feedbacks */
-#feedback,
-#validationResult,
-#output {
-    font-family: 'Roboto', sans-serif;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f4f4f4;
-}
 
-/* Responsividade */
-@media (max-width: 600px) {
-    .container {
-        padding: 15px;
-    }
 
-    header h1 {
-        font-size: 1.5em;
-    }
-
-    section h2 {
-        font-size: 1.2em;
-    }
-
-    button {
-        padding: 8px 12px;
-        font-size: 0.9em;
-    }
-
-    .button-row,
-    .file-input,
-    .tag-input {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .button-row button,
-    .file-input button,
-    .tag-input button {
-        margin-left: 0;
-        margin-top: 10px;
-    }
-}
+/* Adicione qualquer outro estilo personalizado aqui */

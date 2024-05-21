@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validador XML</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/assets/styles.css">
 </head>
-
 <body>
     <div class="container">
         <header>
             <h1>Validador XML - Análise de Contas</h1>
         </header>
 
-        <section class="file-section">
+        <nav>
+            <button class="tab-btn" onclick="showSection('file-section')">Anexar Arquivo</button>
+            <button class="tab-btn" onclick="showSection('tag-validation')">Validar TAG</button>
+            <button class="tab-btn" onclick="showSection('actions')">Comparar Contas</button>
+            <button class="tab-btn" onclick="showSection('beneficiary-list')">Beneficiários</button>
+        </nav>
+
+        <section id="file-section" class="section">
             <h2>Anexar Arquivo XML</h2>
             <p>Selecione um arquivo XML para iniciar a validação.</p>
             <div class="file-input">
@@ -23,10 +28,10 @@
                 <button class="btn secondary" onclick="clearFile()" title="Limpar Arquivo">Limpar Arquivo</button>
             </div>
             <span id="file-name" class="mt-2"></span>
-            <div id="file-feedback" class="result mt-2">Status:</div>
+            <div id="file-feedback" class="result mt-2"></div>
         </section>
 
-        <section class="tag-validation">
+        <section id="tag-validation" class="section hidden">
             <h2>Validação por TAG</h2>
             <p>Insira o nome de uma TAG e clique em "Validar TAG" para verificar se ela está presente ou ausente nas
                 contas do arquivo XML.</p>
@@ -40,23 +45,23 @@
                 <button class="btn success" onclick="validateTag()" title="Validar TAG">Validar TAG</button>
                 <button class="btn warning" onclick="clearTag()" title="Limpar TAG">Limpar TAG</button>
             </div>
-            <div id="tag-feedback" class="result mt-2">Status:</div>
+            <div id="tag-feedback" class="result mt-2"></div>
             <div id="validationResult" class="result mt-2"></div>
             <button id="clearTagBtn" onclick="clearTagSection()">Limpar</button>
         </section>
 
-        <section class="actions">
+        <section id="actions" class="section hidden">
             <h2>Comparando as contas do arquivo</h2>
             <p>Clique para listar as TAGS presentes nas contas do arquivo, e verificar em quais contas as TAGS estão
                 presentes e em quais estão ausentes.</p>
             <button id="comparar" class="btn primary" onclick="compararContas()" title="Comparar Contas">Comparar
                 Contas</button>
-            <div id="comparison-feedback" class="result mt-2">Status:</div>
+            <div id="comparison-feedback" class="result mt-2"></div>
             <div id="comparisonResult" class="result mt-2"></div>
             <button id="clearComparisonBtn" onclick="clearComparisonSection()">Limpar</button>
         </section>
 
-        <section class="beneficiary-list">
+        <section id="beneficiary-list" class="section hidden">
             <h2>Lista de Beneficiários</h2>
             <p>Clique para exibir a lista de beneficiários presente no arquivo XML.</p>
             <div id="output" class="result"></div>
@@ -66,10 +71,8 @@
             </button>
         </section>
 
-        <button class="btn secondary hidden" id="clearResultBtn" onclick="clearResult()" title="Limpar Resultado">Limpar
-            Tudo
+        
     </div>
-    <script src="script.js"></script>
+    <script src="/assets/script.js"></script>
 </body>
-
 </html>

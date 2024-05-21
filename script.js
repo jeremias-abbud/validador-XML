@@ -61,7 +61,7 @@ function getBeneficiaryNames(xmlDoc) {
 
 function displayBeneficiaryInfo(beneficiaryNames) {
     const output = document.getElementById('output');
-    output.innerHTML = `<p>O arquivo possui ${beneficiaryNames.length} contas.</p>`;
+    output.innerHTML = `<h3>Resultado: O arquivo possui ${beneficiaryNames.length} contas.</h3>`;
     globalBeneficiaryNames = beneficiaryNames; // Atribui os nomes dos beneficiários à variável global
     beneficiaryNames.forEach((name, index) => {
         output.innerHTML += `<p>Conta ${index + 1}: ${name}</p>`;
@@ -88,7 +88,7 @@ function validateTag() {
 
     const file = document.getElementById('xmlFileInput').files[0];
     if (file) {
-        feedback.textContent = `Validando TAG ${tagName}...`;
+        // feedback.textContent = `Validando TAG ${tagName}...`;
         const reader = new FileReader();
         reader.onload = function (e) {
             const xmlDoc = parseXML(e.target.result);
@@ -157,7 +157,7 @@ function compararContas() {
     const clearResultBtn = document.getElementById('clearResultBtn');
 
     if (file) {
-        feedback.textContent = "Comparando contas...";
+        // feedback.textContent = "Comparando contas...";
         const reader = new FileReader();
         reader.onload = function (e) {
             const xmlDoc = new DOMParser().parseFromString(e.target.result, "text/xml");
@@ -227,6 +227,7 @@ function clearBeneficiaryList() {
 }
 
 function clearFile() {
+    globalBeneficiaryNames = [];
     clearFeedback();
     document.getElementById('xmlFileInput').value = "";
     document.getElementById('output').innerHTML = "";
@@ -236,7 +237,8 @@ function clearFile() {
     document.getElementById('tag-feedback').innerHTML = "";
     document.getElementById('comparison-feedback').innerHTML = "";
     document.getElementById('clearResultBtn').classList.add('hidden');
-    globalBeneficiaryNames = []; // Limpa a variável global que armazena os nomes dos beneficiários
+    
+    
 }
 
 function clearResult() {
@@ -266,3 +268,23 @@ function clearFeedback() {
         feedback.classList.remove('error');
     });
 }
+
+
+function showSection(sectionId) {
+    // Verifica se a seção atual é a seção do arquivo XML
+    const isFileSection = sectionId === 'file-section';
+
+    // Esconde todas as seções, exceto a seção do arquivo XML se ela estiver sendo exibida
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        if (!(isFileSection && section.id === 'file-section')) {
+            section.classList.add('hidden');
+        }
+    });
+
+    // Mostra a seção correspondente ao botão clicado
+    const activeSection = document.getElementById(sectionId);
+    activeSection.classList.remove('hidden');
+}
+
+
