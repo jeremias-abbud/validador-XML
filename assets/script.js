@@ -61,7 +61,8 @@ function getBeneficiaryNames(xmlDoc) {
 
 function displayBeneficiaryInfo(beneficiaryNames) {
     const output = document.getElementById('output');
-    output.innerHTML = `<h3>Resultado: O arquivo possui ${beneficiaryNames.length} contas.</h3>`;
+    
+    output.innerHTML = `<h4>Resultado - O arquivo possui ${beneficiaryNames.length} contas:<br><br></h4>`;
     globalBeneficiaryNames = beneficiaryNames; // Atribui os nomes dos beneficiários à variável global
     beneficiaryNames.forEach((name, index) => {
         output.innerHTML += `<p>Conta ${index + 1}: ${name}</p>`;
@@ -81,31 +82,39 @@ function validateTag() {
     const validationResult = document.getElementById('validationResult');
     const clearResultBtn = document.getElementById('clearResultBtn');
 
+    // Limpa qualquer mensagem de feedback antes de prosseguir
+    feedback.classList.add('hidden');
+    feedback.textContent = "";
+
     if (tagName === "") {
+        feedback.classList.remove('hidden');
         feedback.textContent = "Por favor, digite o nome da TAG.";
+        alert(feedback.textContent);
         return;
     }
 
     const file = document.getElementById('xmlFileInput').files[0];
-    if (file) {
-        // feedback.textContent = `Validando TAG ${tagName}...`;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const xmlDoc = parseXML(e.target.result);
-            if (isValidXML(xmlDoc)) {
-                const beneficiaryNames = getBeneficiaryNames(xmlDoc);
-                const result = validateTagPresence(xmlDoc, beneficiaryNames, tagName);
-                displayValidationResult(result);
-                clearResultBtn.classList.remove('hidden');
-            } else {
-                feedback.textContent = "Erro: Arquivo XML inválido.";
-            }
-        };
-        reader.readAsText(file);
-    } else {
+    if (!file) {
+        feedback.classList.remove('hidden');
         feedback.textContent = "Por favor, selecione um arquivo XML primeiro.";
+        return; // Sai da função se nenhum arquivo XML estiver carregado
     }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const xmlDoc = parseXML(e.target.result);
+        if (isValidXML(xmlDoc)) {
+            const beneficiaryNames = getBeneficiaryNames(xmlDoc);
+            const result = validateTagPresence(xmlDoc, beneficiaryNames, tagName);
+            displayValidationResult(result);
+            clearResultBtn.classList.remove('hidden');
+        } else {
+            feedback.textContent = "Erro: Arquivo XML inválido.";
+        }
+    };
+    reader.readAsText(file);
 }
+
 
 function validateTagPresence(xmlDoc, beneficiaryNames, tagName) {
     const namespaces = {
@@ -142,10 +151,12 @@ function validateTagPresence(xmlDoc, beneficiaryNames, tagName) {
 function displayValidationResult(results) {
     const tagName = document.getElementById('tagNameInput').value.trim();
     const validationResult = document.getElementById('validationResult');
-    validationResult.innerHTML = `<h3>Resultado da Validação por TAG: ${tagName}</h3>`;
+    let index = 0;
+    validationResult.innerHTML = `<h4>Resultado - Situação da TAG: "${tagName}" nas contas:<br><br></h4>`;
     results.forEach(result => {
-        const status = result.isPresent ? "<span class='green-text'>Presente</span>" : "<span class='red-text'>Ausente</span>";
-        validationResult.innerHTML += `<p>Beneficiário: ${result.name} - TAG ${status}</p>`;
+        index++;
+        const status = result.isPresent ? "<span class='green-text'>TAG Presente</span>" : "<span class='red-text'>TAG Ausente</span>";
+        validationResult.innerHTML += `<p>Conta ${index}: ${result.name} - ${status}</p>`;
     });
 }
 
@@ -157,7 +168,7 @@ function compararContas() {
     const clearResultBtn = document.getElementById('clearResultBtn');
 
     if (file) {
-        // feedback.textContent = "Comparando contas...";
+        validationResult.classList.remove('hidden');
         const reader = new FileReader();
         reader.onload = function (e) {
             const xmlDoc = new DOMParser().parseFromString(e.target.result, "text/xml");
@@ -184,7 +195,7 @@ function compararContas() {
                 });
 
                 // Listar todas as tags e verificar a presença em cada conta
-                validationResult.innerHTML = "<h3><b>Listagem de todas as TAGS das contas:</b></h3>";
+                validationResult.innerHTML = "<h4><b>Resultado - Comparação entre TAGS nas contas:<br><br></b></h4>";
                 allTags.forEach(tagName => {
                     const accountsMissingTag = [];
                     tagsByBeneficiary.forEach((tagList, beneficiaryName) => {
@@ -211,6 +222,7 @@ function compararContas() {
         };
         reader.readAsText(file);
     } else {
+        feedback.classList.remove('hidden');
         feedback.textContent = "Por favor, selecione um arquivo XML primeiro.";
     }
 }
@@ -237,8 +249,6 @@ function clearFile() {
     document.getElementById('tag-feedback').innerHTML = "";
     document.getElementById('comparison-feedback').innerHTML = "";
     document.getElementById('clearResultBtn').classList.add('hidden');
-    
-    
 }
 
 function clearResult() {
@@ -269,7 +279,6 @@ function clearFeedback() {
     });
 }
 
-
 function showSection(sectionId) {
     // Verifica se a seção atual é a seção do arquivo XML
     const isFileSection = sectionId === 'file-section';
@@ -286,5 +295,4 @@ function showSection(sectionId) {
     const activeSection = document.getElementById(sectionId);
     activeSection.classList.remove('hidden');
 }
-
 
