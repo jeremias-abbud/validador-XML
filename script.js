@@ -37,24 +37,22 @@ function getBeneficiaryNames(xmlDoc) {
     };
 
     const beneficiaryNames = [];
-    const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP-SADT");
+    const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP_SADT");
     const guiaResumoInternacao = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaResumoInternacao");
     const guiaConsulta = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaConsulta");
 
-    for (let i = 0; i < guiaSP_SADT.length; i++) {
-        const nomeBeneficiario = guiaSP_SADT[i].getElementsByTagNameNS(namespaces.ans, "nomeBeneficiario")[0].textContent;
-        beneficiaryNames.push(nomeBeneficiario);
-    }
+    const extractNames = (elements) => {
+        for (let i = 0; i < elements.length; i++) {
+            const nomeBeneficiarioElement = elements[i].getElementsByTagNameNS(namespaces.ans, "nomeBeneficiario")[0];
+            if (nomeBeneficiarioElement) {
+                beneficiaryNames.push(nomeBeneficiarioElement.textContent);
+            }
+        }
+    };
 
-    for (let i = 0; i < guiaResumoInternacao.length; i++) {
-        const nomeBeneficiario = guiaResumoInternacao[i].getElementsByTagNameNS(namespaces.ans, "nomeBeneficiario")[0].textContent;
-        beneficiaryNames.push(nomeBeneficiario);
-    }
-
-    for (let i = 0; i < guiaConsulta.length; i++) {
-        const nomeBeneficiario = guiaConsulta[i].getElementsByTagNameNS(namespaces.ans, "nomeBeneficiario")[0].textContent;
-        beneficiaryNames.push(nomeBeneficiario);
-    }
+    extractNames(guiaSP_SADT);
+    extractNames(guiaResumoInternacao);
+    extractNames(guiaConsulta);
 
     return beneficiaryNames;
 }
@@ -115,35 +113,28 @@ function validateTag() {
     reader.readAsText(file);
 }
 
-
 function validateTagPresence(xmlDoc, beneficiaryNames, tagName) {
     const namespaces = {
         ans: "http://www.ans.gov.br/padroes/tiss/schemas"
     };
 
-    const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP-SADT");
+    const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP_SADT");
     const guiaResumoInternacao = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaResumoInternacao");
     const guiaConsulta = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaConsulta");
 
     const results = [];
 
-    for (let i = 0; i < guiaSP_SADT.length; i++) {
-        const tags = guiaSP_SADT[i].getElementsByTagNameNS(namespaces.ans, tagName);
-        const isPresent = tags.length > 0;
-        results.push({ name: beneficiaryNames[i], isPresent });
-    }
+    const checkTagPresence = (elements, offset) => {
+        for (let i = 0; i < elements.length; i++) {
+            const tags = elements[i].getElementsByTagNameNS(namespaces.ans, tagName);
+            const isPresent = tags.length > 0;
+            results.push({ name: beneficiaryNames[i + offset], isPresent });
+        }
+    };
 
-    for (let i = 0; i < guiaResumoInternacao.length; i++) {
-        const tags = guiaResumoInternacao[i].getElementsByTagNameNS(namespaces.ans, tagName);
-        const isPresent = tags.length > 0;
-        results.push({ name: beneficiaryNames[i + guiaSP_SADT.length], isPresent });
-    }
-
-    for (let i = 0; i < guiaConsulta.length; i++) {
-        const tags = guiaConsulta[i].getElementsByTagNameNS(namespaces.ans, tagName);
-        const isPresent = tags.length > 0;
-        results.push({ name: beneficiaryNames[i + guiaSP_SADT.length + guiaResumoInternacao.length], isPresent });
-    }
+    checkTagPresence(guiaSP_SADT, 0);
+    checkTagPresence(guiaResumoInternacao, guiaSP_SADT.length);
+    checkTagPresence(guiaConsulta, guiaSP_SADT.length + guiaResumoInternacao.length);
 
     return results;
 }
@@ -178,7 +169,7 @@ function compararContas() {
                 // Mapear as tags presentes em cada conta
                 const tagsByBeneficiary = new Map();
                 beneficiaryNames.forEach((name, index) => {
-                    const tags = xmlDoc.evaluate(`//*[local-name()='guiaSP-SADT' or local-name()='guiaResumoInternacao' or local-name()='guiaConsulta'][${index + 1}]//*[not(self::text())]`, xmlDoc, null, XPathResult.ANY_TYPE, null);
+                    const tags = xmlDoc.evaluate(`//*[local-name()='guiaSP_SADT' or local-name()='guiaResumoInternacao' or local-name()='guiaConsulta'][${index + 1}]//*[not(self::text())]`, xmlDoc, null, XPathResult.ANY_TYPE, null);
                     let tag = tags.iterateNext();
                     const tagList = [];
                     while (tag) {
@@ -295,4 +286,3 @@ function showSection(sectionId) {
     const activeSection = document.getElementById(sectionId);
     activeSection.classList.remove('hidden');
 }
-
