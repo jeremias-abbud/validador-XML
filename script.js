@@ -37,9 +37,11 @@ function getBeneficiaryNames(xmlDoc) {
     };
 
     const beneficiaryNames = [];
-    const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP_SADT");
-    const guiaResumoInternacao = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaResumoInternacao");
-    const guiaConsulta = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaConsulta");
+    const tagsToCheck = [
+        "guiaSP_SADT", "guiaSP-SADT",
+        "guiaResumoInternacao", "guiaResumo-Internacao",
+        "guiaConsulta", "guia-Consulta"
+    ];
 
     const extractNames = (elements) => {
         for (let i = 0; i < elements.length; i++) {
@@ -50,9 +52,10 @@ function getBeneficiaryNames(xmlDoc) {
         }
     };
 
-    extractNames(guiaSP_SADT);
-    extractNames(guiaResumoInternacao);
-    extractNames(guiaConsulta);
+    tagsToCheck.forEach(tag => {
+        const elements = xmlDoc.getElementsByTagNameNS(namespaces.ans, tag);
+        extractNames(elements);
+    });
 
     return beneficiaryNames;
 }
@@ -118,9 +121,11 @@ function validateTagPresence(xmlDoc, beneficiaryNames, tagName) {
         ans: "http://www.ans.gov.br/padroes/tiss/schemas"
     };
 
-    const guiaSP_SADT = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaSP_SADT");
-    const guiaResumoInternacao = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaResumoInternacao");
-    const guiaConsulta = xmlDoc.getElementsByTagNameNS(namespaces.ans, "guiaConsulta");
+    const tagsToCheck = [
+        "guiaSP_SADT", "guiaSP-SADT",
+        "guiaResumoInternacao", "guiaResumo-Internacao",
+        "guiaConsulta", "guia-Consulta"
+    ];
 
     const results = [];
 
@@ -132,9 +137,12 @@ function validateTagPresence(xmlDoc, beneficiaryNames, tagName) {
         }
     };
 
-    checkTagPresence(guiaSP_SADT, 0);
-    checkTagPresence(guiaResumoInternacao, guiaSP_SADT.length);
-    checkTagPresence(guiaConsulta, guiaSP_SADT.length + guiaResumoInternacao.length);
+    let offset = 0;
+    tagsToCheck.forEach(tag => {
+        const elements = xmlDoc.getElementsByTagNameNS(namespaces.ans, tag);
+        checkTagPresence(elements, offset);
+        offset += elements.length;
+    });
 
     return results;
 }
@@ -169,7 +177,7 @@ function compararContas() {
                 // Mapear as tags presentes em cada conta
                 const tagsByBeneficiary = new Map();
                 beneficiaryNames.forEach((name, index) => {
-                    const tags = xmlDoc.evaluate(`//*[local-name()='guiaSP_SADT' or local-name()='guiaResumoInternacao' or local-name()='guiaConsulta'][${index + 1}]//*[not(self::text())]`, xmlDoc, null, XPathResult.ANY_TYPE, null);
+                    const tags = xmlDoc.evaluate(`//*[local-name()='guiaSP_SADT' or local-name()='guiaSP-SADT' or local-name()='guiaResumoInternacao' or local-name()='guiaResumo-Internacao' or local-name()='guiaConsulta' or local-name()='guia-Consulta'][${index + 1}]//*[not(self::text())]`, xmlDoc, null, XPathResult.ANY_TYPE, null);
                     let tag = tags.iterateNext();
                     const tagList = [];
                     while (tag) {
