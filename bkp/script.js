@@ -1,21 +1,7 @@
 let globalBeneficiaryNames = []; // Variável global para armazenar os nomes dos beneficiários
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Se o usuário já carregou um arquivo XML, garantir que as funcionalidades estejam ativas
-    const fileInput = document.getElementById('xmlFileInput');
-    if (fileInput.files.length > 0) {
-        handleFileLoad(fileInput.files[0]);
-    }
-});
-
-
-
 document.getElementById('xmlFileInput').addEventListener('change', function (event) {
-    handleFileLoad(event.target.files[0]);
-});
-
-// Função que lida com o carregamento do arquivo XML
-function handleFileLoad(file) {
+    const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -24,21 +10,8 @@ function handleFileLoad(file) {
             if (isValidXML(xmlDoc)) {
                 feedback.textContent = "Arquivo XML carregado com sucesso.";
                 feedback.classList.add('success');
-                globalBeneficiaryNames = getBeneficiaryNames(xmlDoc);
+                globalBeneficiaryNames = getBeneficiaryNames(xmlDoc); // Atualiza a lista global de beneficiários
                 displayBeneficiaryInfo(globalBeneficiaryNames);
-
-                // Exibe todas as seções de funcionalidades
-                document.getElementById('beneficiary-list').classList.remove('hidden');
-                document.getElementById('tag-validation').classList.remove('hidden');
-                document.getElementById('actions').classList.remove('hidden');
-
-                // Exibe todos os botões necessários
-                document.getElementById('exibirBeneficiarios').classList.remove('hidden');
-                document.getElementById('clearBeneficiaryBtn').classList.remove('hidden');
-                document.getElementById('clearTagBtn').classList.remove('hidden');
-                document.getElementById('comparar').classList.remove('hidden');
-                document.getElementById('clearComparisonBtn').classList.remove('hidden');
-
             } else {
                 feedback.textContent = "Erro: Arquivo XML inválido.";
                 feedback.classList.remove('success');
@@ -47,8 +20,7 @@ function handleFileLoad(file) {
         };
         reader.readAsText(file);
     }
-}
-
+});
 
 function parseXML(xml) {
     const parser = new DOMParser();
@@ -325,22 +297,21 @@ function clearFeedback() {
 }
 
 function showSection(sectionId) {
-    // Esconde todas as seções
+    // Verifica se a seção atual é a seção do arquivo XML
+    const isFileSection = sectionId === 'file-section';
+
+    // Esconde todas as seções, exceto a seção do arquivo XML se ela estiver sendo exibida
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
-        section.classList.add('hidden');
+        if (!(isFileSection && section.id === 'file-section')) {
+            section.classList.add('hidden');
+        }
     });
 
     // Mostra a seção correspondente ao botão clicado
     const activeSection = document.getElementById(sectionId);
     activeSection.classList.remove('hidden');
-    
-    // Verifica se há um arquivo carregado para ativar as funcionalidades
-    if (sectionId === 'file-section' && document.getElementById('xmlFileInput').files.length > 0) {
-        handleFileLoad(document.getElementById('xmlFileInput').files[0]);
-    }
 }
-
 
 function compararContas() {
     clearFeedback();
